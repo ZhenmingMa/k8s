@@ -23,7 +23,7 @@ mkdir /nfs
 ```
 $ vi /etc/exports
 输入以下内容，格式为：nfs共享目录 nfs客户端地址1(param1, param2,...) nfs客户端地址2(param1, param2,...)
-/nfs 10.1.1.0/24(rw,async,no_root_squash)
+/nfs 192.168.3.224/24(rw,async,no_root_squash)
 ```
 
 启动服务
@@ -172,7 +172,7 @@ spec:
               value: fuseim.pri/ifs
             - name: NFS_SERVER
               # NFS服务器的ip地址
-              value: 192.168.1.224
+              value: 192.168.3.224
             - name: NFS_PATH
               # 修改为实际创建的共享挂载目录
               value: /nfs
@@ -180,7 +180,7 @@ spec:
         - name: nfs-client-root
           nfs:
             # NFS服务器的ip地址
-            server: 192.168.1.224
+            server: 192.168.3.224
             # 修改为实际创建的共享挂载目录
             path: /nfs
 ---
@@ -188,11 +188,12 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: managed-nfs-storage
-# 必须与deployment.yaml中的PROVISIONER_NAME一致
-provisioner: fuseim.pri/ifs # or choose another name, must match deployment's env PROVISIONER_NAME'
+provisioner: fuseim.pri/ifs
 parameters:
   archiveOnDelete: "false"
+---
 EOF
+
 ```
 
 ## 部署
@@ -204,7 +205,7 @@ kubectl apply -f stroageclass.yaml
 ## 查看
 
 ```
-kubectl get sv
+kubectl get sc
 ```
 
 ## 设置默认StroageClass
